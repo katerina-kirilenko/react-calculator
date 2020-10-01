@@ -1,21 +1,39 @@
 import React, { useState } from 'react';
 import Header from '@/components/blocks/Header';
-import Row from '@/components/blocks/Row';
+import Rows from '@/components/blocks/Rows';
 import Result from '@/components/blocks/Result';
-import {PLUS, MINUS} from '@/constants/constants';
-  
-const App = () => {
-  const [inputValue, setInputValue] = useState('0');
+import { PLUS } from '@/constants/constants';
 
-  const InputValueHandler = (e) => {
-    setInputValue(e.target.value);
+let idx = 1;
+
+const App = () => {
+  const [rows, setRows] = useState([
+    {
+      id: idx,
+      signSelected: PLUS,
+      value: '0',
+      disable: false,
+    },
+  ]);
+
+  const handlerRowAdd = () => {
+    const newRow = {
+      id: ++idx,
+      signSelected: PLUS,
+      value: '0',
+      disable: false,
+    };
+
+    setRows((prevRows) => {
+      return [...prevRows, newRow];
+    });
   };
 
   return (
     <div className="container">
-      <Header />
-      <Row inputValue={inputValue} getInputValue={InputValueHandler} />
-      <Result res={inputValue} />
+      <Header onRowAdd={handlerRowAdd} />
+      <Rows rows={rows} />
+      <Result res={0} />
     </div>
   );
 };

@@ -12,7 +12,7 @@ const Result = ({ res }) => {
 };
 
 Result.propTypes = {
-  res: PropTypes.string.isRequired,
+  res: PropTypes.number.isRequired,
 };
 
 export default Result;
