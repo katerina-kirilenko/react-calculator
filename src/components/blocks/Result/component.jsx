@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Result = ({ res }) => {
+const Result = ({ result }) => {
   return (
     <div className="mt-3">
       <h4>
-        Result: <span>{res}</span>
+        Result: <span>{result}</span>
       </h4>
     </div>
   );
 };
 
 Result.propTypes = {
-  res: PropTypes.number.isRequired,
+  result: PropTypes.number.isRequired,
 };
 
 export default Result;
