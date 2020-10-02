@@ -33,7 +33,12 @@ const Row = ({ row: { value, disable }, onRowDelete, onToggleDisable }) => {
 };
 
 Row.propTypes = {
-  // row: PropTypes.object.isRequired,
+  row: PropTypes.PropTypes.shape({
+    id: PropTypes.string,
+    signSelected: PropTypes.string,
+    value: PropTypes.string,
+    disable: PropTypes.bool,
+  }).isRequired,
   onRowDelete: PropTypes.func.isRequired,
   onToggleDisable: PropTypes.func.isRequired,
 };

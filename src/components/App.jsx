@@ -1,26 +1,20 @@
 import React, { useState, useCallback } from 'react';
+import faker from 'faker';
 import Header from '@/components/blocks/Header';
 import Rows from '@/components/blocks/Rows';
 import Result from '@/components/blocks/Result';
 import { PLUS } from '@/constants/constants';
 
-let idx = 0;
-
 const App = () => {
   const [rows, setRows] = useState([]);
 
-  const createNewRow = () => {
-    return {
-      id: ++idx,
+  const handlerRowAdd = useCallback(() => {
+    const newRow = {
+      id: faker.random.uuid(),
       signSelected: PLUS,
       value: '0',
       disable: false,
     };
-  };
-
-  // useCallback для всех функций
-  const handlerRowAdd = useCallback(() => {
-    const newRow = createNewRow();
     setRows((prevRows) => [...prevRows, newRow]);
   }, [rows]);
 
@@ -34,14 +28,24 @@ const App = () => {
 
   const handlerToggleDisable = useCallback(
     (id) => {
-      const index = rows.findIndex((row) => row.id === id);
-      const oldRow = rows[index];
-      const newRow = { ...oldRow, disable: !oldRow.disable };
-      const newRows = [...rows.slice(0, index), newRow, ...rows.slice(index + 1)];
+      const newRows = rows.map((row) => {
+        if (row.id === id) {
+          return {
+            ...row,
+            disable: !row.disable,
+          };
+        }
+        return row;
+      });
       setRows(newRows);
     },
     [rows],
   );
+
+  // temp
+  const inputsCalculate = useCallback(() => {
+    const activeRows = rows.filter((row) => row.disable === false);
+  }, [rows]);
 
   return (
     <div className="container">

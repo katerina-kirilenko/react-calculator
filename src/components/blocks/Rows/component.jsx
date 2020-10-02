@@ -1,33 +1,45 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Row from '@/components/blocks/Row';
 
 const Rows = ({ rows, onRowDelete, onToggleDisable }) => {
-  // TODO вынести онклик в отдельную функцию
-  const rowDeleted = (id) => onRowDelete(id);
-  // <button onClick={this.deleteRow.bind(this, id)}>Удалить строку</button>
+  const handleRowDelete = useCallback(
+    (id) => () => {
+      onRowDelete(id);
+    },
+    [onRowDelete],
+  );
+  const handleToggleDisable = useCallback(
+    (id) => () => {
+      onToggleDisable(id);
+    },
+    [onRowDelete],
+  );
 
   const renderRows = rows.map((row) => {
     return (
-      <li className="list-group-item d-flex justify-content-between" key={row.id}>
+      <li key={row.id} className="list-group-item d-flex justify-content-between">
         <Row
           row={row}
-          onRowDelete={() => onRowDelete(row.id)}
-          onToggleDisable={() => onToggleDisable(row.id)}
+          onRowDelete={handleRowDelete(row.id)}
+          onToggleDisable={handleToggleDisable(row.id)}
         />
       </li>
     );
   });
 
-  return (
-    <form>
-      <ul className="list-group">{renderRows}</ul>
-    </form>
-  );
+  return <ul className="list-group">{renderRows}</ul>;
 };
 
 Rows.propTypes = {
-  // rows: PropTypes.object.isRequired,
+  rows: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      signSelected: PropTypes.string,
+      value: PropTypes.string,
+      disable: PropTypes.bool,
+    }),
+  ).isRequired,
   onRowDelete: PropTypes.func.isRequired,
   onToggleDisable: PropTypes.func.isRequired,
 };
