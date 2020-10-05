@@ -12,8 +12,7 @@ const App = () => {
   useEffect(() => {
     const activeRows = rows.filter((row) => row.disable === false);
     const summary = activeRows.reduce((sum, current) => {
-      const currentValue = `${current.signSelected}${current.value}`;
-      const num = Number(current.value >= 0 ? currentValue : currentValue.slice(2));
+      const num = Number(`${current.signSelected}${current.value}`);
       return sum + num;
     }, 0);
     setResult(summary);
@@ -55,16 +54,21 @@ const App = () => {
 
   const handleChangeInputs = useCallback(
     (id) => (event) => {
-      const updateRowsValue = rows.map((row) => {
-        if (row.id === id) {
-          return {
-            ...row,
-            value: event.target.value,
-          };
-        }
-        return row;
-      });
-      setRows(updateRowsValue);
+      const regx = /^\d+$/g;
+      if (!event.target.value.match(regx)) {
+        event.preventDefault();
+      } else {
+        const updateRows = rows.map((row) => {
+          if (row.id === id) {
+            return {
+              ...row,
+              value: event.target.value,
+            };
+          }
+          return row;
+        });
+        setRows(updateRows);
+      }
     },
     [rows],
   );

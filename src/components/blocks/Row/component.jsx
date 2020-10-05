@@ -11,17 +11,16 @@ const Row = ({
 }) => {
   return (
     <>
-      <select className="form-control col-1 mr-3" disabled={disable} onClick={onChangeSelect}>
+      <select className="form-control col-1 mr-3" disabled={disable} onChange={onChangeSelect}>
         <option value={PLUS}>{PLUS}</option>
         <option value={MINUS}>{MINUS}</option>
       </select>
       <input
-        type="number"
+        type="text"
         className="form-control col-8"
         onChange={onChangeInput}
         value={value}
         disabled={disable}
-        autoFocus
       />
       <div className="col-3 d-flex">
         <button type="button" className="btn btn-danger w-100 mr-3" onClick={onRowDelete}>
