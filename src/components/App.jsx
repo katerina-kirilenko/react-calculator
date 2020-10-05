@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import faker from 'faker';
 import Header from '@/components/blocks/Header';
 import Rows from '@/components/blocks/Rows';
@@ -7,6 +7,16 @@ import { PLUS } from '@/constants/constants';
 
 const App = () => {
   const [rows, setRows] = useState([]);
+  const [result, setResult] = useState(0);
+
+  useEffect(() => {
+    const activeRows = rows.filter((row) => row.disable === false);
+    const summary = activeRows.reduce((sum, current) => {
+      const num = Number(`${current.signSelected}${current.value}`);
+      return sum + num;
+    }, 0);
+    setResult(summary);
+  }, [rows]);
 
   const handlerRowAdd = useCallback(() => {
     const newRow = {
@@ -16,10 +26,10 @@ const App = () => {
       disable: false,
     };
     setRows((prevRows) => [...prevRows, newRow]);
-  }, [rows]);
+  }, []);
 
   const handlerRowDelete = useCallback(
-    (id) => {
+    (id) => () => {
       const newRows = rows.filter((row) => row.id !== id);
       setRows(newRows);
     },
@@ -27,7 +37,7 @@ const App = () => {
   );
 
   const handlerToggleDisable = useCallback(
-    (id) => {
+    (id) => () => {
       const newRows = rows.map((row) => {
         if (row.id === id) {
           return {
@@ -42,16 +52,54 @@ const App = () => {
     [rows],
   );
 
-  // temp
-  const inputsCalculate = useCallback(() => {
-    const activeRows = rows.filter((row) => row.disable === false);
-  }, [rows]);
+  const handleChangeInputs = useCallback(
+    (id) => (event) => {
+      const regx = /^\d+$/g;
+      if (!event.target.value.match(regx)) {
+        event.preventDefault();
+      } else {
+        const updateRows = rows.map((row) => {
+          if (row.id === id) {
+            return {
+              ...row,
+              value: event.target.value,
+            };
+          }
+          return row;
+        });
+        setRows(updateRows);
+      }
+    },
+    [rows],
+  );
+
+  const handleChangeSelect = useCallback(
+    (id) => (event) => {
+      const updateSignSelected = rows.map((row) => {
+        if (row.id === id) {
+          return {
+            ...row,
+            signSelected: event.target.value,
+          };
+        }
+        return row;
+      });
+      setRows(updateSignSelected);
+    },
+    [rows],
+  );
 
   return (
     <div className="container">
       <Header onRowAdd={handlerRowAdd} />
-      <Rows rows={rows} onRowDelete={handlerRowDelete} onToggleDisable={handlerToggleDisable} />
-      <Result result={0} />
+      <Rows
+        rows={rows}
+        onRowDelete={handlerRowDelete}
+        onToggleDisable={handlerToggleDisable}
+        onChangeInput={handleChangeInputs}
+        onChangeSelect={handleChangeSelect}
+      />
+      <Result result={result} />
     </div>
   );
 };
